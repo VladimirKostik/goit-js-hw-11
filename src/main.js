@@ -3,60 +3,58 @@ import 'izitoast/dist/css/iziToast.min.css';
 import { getImagesByQuery } from './js/pixabay-api.js';
 import { createGallery, clearGallery,showLoader, hideLoader} from './js/render-functions.js';
 import 'loaders.css/loaders.min.css';
+
+
 const form = document.querySelector('form');
 const submitBtn = form.querySelector('button[type="submit"]');
+const oldText = submitBtn.textContent;
 
- 
 form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
+  const formData = new FormData(e.target);
+  const message = formData.get('searchText').trim();
 
-        const formData = new FormData(e.target);
-        const message = formData.get('searchText').trim();
-    
-        if (!message) {
-            iziToast.error({
-                position: 'topRight',
-                title: 'Ерор',
-                message: 'Ви нічого не ввели!'
-            });
-            return;
-    }
-        clearGallery();
-        showLoader();
+  if (!message) {
+    iziToast.error({
+      position: 'topRight',
+      title: 'Error',
+      message: 'Ви нічого не ввели!',
+    });
+    return;
+  }
 
-        submitBtn.disabled = true;
+  clearGallery();
+  showLoader();
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Loading...';
 
-        
-        getImagesByQuery(message).then(result => {
-   
-            const images = result.data.hits;
-        
-            if (!images.length) {
-                iziToast.error({
-                    position: 'topRight',
-                    title: 'Немає результатів',
-                    message: 'Нічого не знайдено'
-                });
-                submitBtn.disabled = false;
-               submitBtn.textContent = oldText;
-                return;
-            }
+  getImagesByQuery(message)
+    .then(result => {
+      const images = result.data.hits;
 
-            createGallery(images)
-                ;
-        }).catch((err) => {console.log(err);
-        
-            iziToast.error({
-                position: 'topRight',
-                title: err,
-                message: 'Помилка'
-            })
-
-        }).then(() => {
-           hideLoader();
-           submitBtn.disabled = false;
-            e.target.reset();
+      if (!images.length) {
+        iziToast.error({
+          position: 'topRight',
+          title: 'Немає результатів',
+          message: 'Нічого не знайдено',
         });
+        return;
+      }
 
-})
+      createGallery(images);
+    })
+    .catch(err => {
+      iziToast.error({
+        position: 'topRight',
+        title: 'Помилка',
+        message: err.message || err,
+      });
+    })
+    .finally(() => {
+      hideLoader();
+      submitBtn.disabled = false;
+      submitBtn.textContent = oldText;
+      e.target.reset();
+    });
+});
