@@ -7,15 +7,7 @@ let loaderEl;
 
 export function createGallery(images = []) {
 
-  let gallery = document.querySelector('#gallery');
-
-  if (!gallery) {
-    gallery = document.createElement('div');
-    gallery.id = 'gallery';
-    gallery.classList.add('gallery');
-    document.body.appendChild(gallery); 
-  }
-
+const gallery = document.querySelector('.gallery');
   const markup = images
     .map(
       ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
