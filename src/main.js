@@ -1,9 +1,8 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { getImagesByQuery } from './js/pixabay-api.js';
-import { createGallery, clearGallery,showLoader, hideLoader} from './js/render-functions.js';
+import { createGallery, clearGallery, showLoader, hideLoader } from './js/render-functions.js';
 import 'loaders.css/loaders.min.css';
-
 
 const form = document.querySelector('form');
 const submitBtn = form.querySelector('button[type="submit"]');
@@ -30,9 +29,7 @@ form.addEventListener('submit', (e) => {
   submitBtn.textContent = 'Loading...';
 
   getImagesByQuery(message)
-    .then(result => {
-      const images = result.data.hits;
-
+    .then(images => {
       if (!images.length) {
         iziToast.error({
           position: 'topRight',

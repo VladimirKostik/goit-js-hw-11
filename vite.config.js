@@ -44,5 +44,15 @@ export default defineConfig(({ command }) => {
         sort: 'mobile-first',
       }),
     ],
+    server: {
+      proxy: {
+        // всі запити на /api/ будуть проксуватися на pixabay.com
+        '/api': {
+          target: 'https://pixabay.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
   };
 });

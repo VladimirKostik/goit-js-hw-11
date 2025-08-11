@@ -4,10 +4,8 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 let lightbox;
 let loaderEl;
 
-
 export function createGallery(images = []) {
-
-const gallery = document.querySelector('.gallery');
+  const gallery = document.querySelector('.gallery');
   const markup = images
     .map(
       ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
@@ -28,7 +26,7 @@ const gallery = document.querySelector('.gallery');
   gallery.insertAdjacentHTML('beforeend', markup);
 
   if (!lightbox) {
-    lightbox = new SimpleLightbox('#gallery a', {
+    lightbox = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
       captionDelay: 250,
     });
@@ -37,12 +35,10 @@ const gallery = document.querySelector('.gallery');
   }
 }
 
-
 export function clearGallery() {
-  const gallery = document.querySelector('#gallery');
+  const gallery = document.querySelector('.gallery'); 
   if (gallery) gallery.innerHTML = '';
 }
-
 
 function ensureLoader() {
   if (!loaderEl) {
