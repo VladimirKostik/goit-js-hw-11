@@ -25,33 +25,39 @@ form.addEventListener('submit', (e) => {
 
   clearGallery();
   showLoader();
+
+  // Ставимо стан "Loading..."
   submitBtn.disabled = true;
   submitBtn.textContent = 'Loading...';
+  submitBtn.classList.add('loading');
 
-  getImagesByQuery(message)
-    .then(images => {
-      if (!images.length) {
+  // Показуємо "Loading..." рівно 2 секунди
+  setTimeout(() => {
+    getImagesByQuery(message)
+      .then(images => {
+        if (!images.length) {
+          iziToast.error({
+            position: 'topRight',
+            title: 'Немає результатів',
+            message: 'Нічого не знайдено',
+          });
+          return;
+        }
+        createGallery(images);
+      })
+      .catch(err => {
         iziToast.error({
           position: 'topRight',
-          title: 'Немає результатів',
-          message: 'Нічого не знайдено',
+          title: 'Помилка',
+          message: err.message || err,
         });
-        return;
-      }
-
-      createGallery(images);
-    })
-    .catch(err => {
-      iziToast.error({
-        position: 'topRight',
-        title: 'Помилка',
-        message: err.message || err,
+      })
+      .finally(() => {
+        hideLoader();
+        submitBtn.disabled = false;
+        submitBtn.textContent = oldText;
+        submitBtn.classList.remove('loading');
+        e.target.reset();
       });
-    })
-    .finally(() => {
-      hideLoader();
-      submitBtn.disabled = false;
-      submitBtn.textContent = oldText;
-      e.target.reset();
-    });
+  }, 500);
 });
